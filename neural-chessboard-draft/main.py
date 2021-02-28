@@ -52,18 +52,19 @@ def layer():
 
 ################################################################################
 
-def detect(args):
+def detect(input, output="../neural-chessboard-draft/ChessBot/plzwork.jpg"):
 	global NC_LAYER, NC_IMAGE, NC_CONFIG
 
-	if (not os.path.isfile(args.input)):
-		utils.errn("error: the file \"%s\" does not exits" % args.input)
+	# if (not os.path.isfile(args.input)):
+	# 	utils.errn("error: the file \"%s\" does not exits" % args.input)
 
-	NC_IMAGE, NC_LAYER = ImageObject(load(args.input)), 0
+	# NC_IMAGE, NC_LAYER = ImageObject(load(args.input)), 0
+	NC_IMAGE, NC_LAYER = ImageObject(input), 0
 	for _ in range(NC_CONFIG['layers']):
 		NC_LAYER += 1; layer()
-	save(args.output, NC_IMAGE['orig'])
-
-	print("DETECT: %s" % args.input)
+	# save(output, NC_IMAGE['orig'])
+	# print("DETECT: %s" % output)
+	return NC_IMAGE['orig']
 
 def dataset(args):
 	print("DATASET: use dataset.py") # FIXME
