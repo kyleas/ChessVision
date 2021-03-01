@@ -76,6 +76,8 @@ char board[8][8] = { {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'},
   {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}
 };
 
+String piece[] = {"",""};
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Setting up");
@@ -108,12 +110,17 @@ void loop() {
   if (Serial.available()) {
     content = Serial.readString(); // Read and store incoming data from the Compuuuuter
     // Extract the data from the string and parse
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 8; i++) {
       int index = content.indexOf(","); // Locate the first "," in the incoming data
+      if (index < 6) {
       data[i] = atol(content.substring(0, index).c_str()); // Extract number from start to the ","
+      } else {
+        piece[i-6] = content.substring(0, index).c_str();
+      }
       content = content.substring(index + 1); // Remove the number from the string
       Serial.print(i) + Serial.print( " = "); Serial.println(data[i]);
     }
+
 
     /*
       data[0] - RUN

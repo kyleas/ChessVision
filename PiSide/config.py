@@ -19,3 +19,7 @@ NC_CLOCK = time()
 NC_DEBUG = False # True
 
 NC_CONFIG = {'layers': 3}
+
+move_end = []
+move_start = []
+pieces = []
