@@ -23,3 +23,12 @@ NC_CONFIG = {'layers': 3}
 move_end = []
 move_start = []
 pieces = []
+
+initial_img = None
+transformed_img = None
+hsv_filter = None
+threshold = None
+contours_img = None
+show_contours = None
+final_img = None
+handImg = None
