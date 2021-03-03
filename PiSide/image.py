@@ -8,6 +8,16 @@ def fixImg():
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1200)
     # ret, config.initial_img = cap.read()
 
+    # from picamera.array import PiRGBArray
+    # from picamera import PiCamera
+    # import time
+    #
+    # camera = PiCamera()
+    # rawCapture = PiRGBArray(camera)
+    #
+    # camera.capture(rawCapture, format="bgr")
+    # image = rawCapture.array
+
     # rows, colts, ch = img.shape
     pts1 = np.float32([[327, 265], [1173, 249], [227, 1150], [1273, 1140]])
     pts2 = np.float32([[0, 0], [1200, 0], [0, 1200], [1200, 1200]])
