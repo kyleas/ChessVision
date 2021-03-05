@@ -3,14 +3,14 @@ import cv2
 
 import config
 import image
-import playchess
+import playchess, calibrate
 import numpy as np
 
 board = chess.Board()
 
 config.current_board = config.starting_board
 
-img1 = cv2.imread('Images/scanlight.jpg')
+img1 = cv2.imread('Images/initial.jpg')
 img2 = cv2.imread(r'C:\Users\kyle\Desktop\neural-chessboard-draft\neural-chessboard-draft\ChessBot\rvision.jpg')
 img3 = cv2.imread('../neural-chessboard-draft/ChessBot/move1_mod.jpg')
 # img = main.detect(input=img2, output='../neural-chessboard-draft/ChessBot/plzwork.jpg')
@@ -97,5 +97,12 @@ def playChess():
         display_images()
 
 
+calibrate.readcalibration()
 playChess()
 
+
+# calibrate.calibrate_transform()
+# calibrate.write_calibration()
+# calibrate.readcalibration()
+# calibrate.calibrate_white()
+# calibrate.write_calibration()
