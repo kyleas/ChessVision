@@ -1,15 +1,39 @@
 import cv2
 import numpy as np
 import config
+import time
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+
+def displayImage(img):
+    cv2.imshow("image", img)
+    k = cv2.waitKey(0)
+    if k == 27:
+        cv2.destroyAllWindows()    
 
 def fixImg():
+    camera = PiCamera()
+    camera.resolution = (1600,1200)
+    rawCapture = PiRGBArray(camera, size=(1600,1200))
+
+    time.sleep(0.5)
+
+    camera.capture(rawCapture, format="bgr")
+    config.initial_img = rawCapture.array
+    displayImage(config.initial_img)
+    cv2.imwrite('initial.jpg',config.initial_img)
+
+#     cv2.imshow("Image", config.initial_img)
+#     cv2.waitKey(0)
+        
     pts1 = np.float32([config.chess_coordinates[0:2], config.chess_coordinates[2:4], config.chess_coordinates[4:6], config.chess_coordinates[6:8]])
     pts2 = np.float32([[0, 0], [1200, 0], [0, 1200], [1200, 1200]])
 
     M = cv2.getPerspectiveTransform(pts1, pts2)
 
     config.transformed_img = cv2.warpPerspective(config.initial_img, M, (1200, 1200))
-
+    displayImage(config.transformed_img)
+    cv2.imwrite('transform.jpg',config.transformed_img)
 
 def findPieces():
     hsv = cv2.cvtColor(config.transformed_img.copy(), cv2.COLOR_BGR2HSV)
@@ -20,6 +44,7 @@ def findPieces():
     imask_white = mask_white > 0
     config.hsv_filter = np.zeros_like(config.transformed_img, np.uint8)
     config.hsv_filter[imask_white] = config.transformed_img[imask_white]
+    displayImage(config.hsv_filter)
 
     gray = cv2.cvtColor(config.hsv_filter, cv2.COLOR_BGR2GRAY)
     cv2.imshow('image',gray)

@@ -10,14 +10,11 @@ board = chess.Board()
 
 config.current_board = config.starting_board
 
-img1 = cv2.imread('Images/initial.jpg')
-img2 = cv2.imread(r'C:\Users\kyle\Desktop\neural-chessboard-draft\neural-chessboard-draft\ChessBot\rvision.jpg')
-img3 = cv2.imread('../neural-chessboard-draft/ChessBot/move1_mod.jpg')
-# img = main.detect(input=img2, output='../neural-chessboard-draft/ChessBot/plzwork.jpg')
-img = img2
+img1 = cv2.imread('Images/scanlight.jpg')
+detect(input=img2, output='../neural-chessboard-draft/ChessBot/plzwork.jpg')
+#img = img2
 pieces = []
 config.initial_img = img1
-
 
 def userMove():
     print(config.move_start)
