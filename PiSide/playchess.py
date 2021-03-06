@@ -8,9 +8,10 @@ board = chess.Board()
 
 
 #Windows
-#stockfish = Stockfish('stockfish/stockfish_13_win_x64_bmi2.exe')
+stockfish = Stockfish('stockfish/stockfish_13_win_x64_bmi2.exe')
 #Linux
 stockfish = Stockfish('/home/pi/Downloads/Stockfish-sf_13/src/stockfish')
+
 
 stockfish.set_skill_level(25)
 # stockfish.set_position(["e2e4", "e7e6"])
