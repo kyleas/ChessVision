@@ -95,12 +95,13 @@ def playChess():
         display_images()
 
 
-calibrate.readcalibration()
-playChess()
-
-
-# calibrate.calibrate_transform()
-# calibrate.write_calibration()
 # calibrate.readcalibration()
-# calibrate.calibrate_white()
-# calibrate.write_calibration()
+# playChess()
+
+image.getImage()
+calibrate.readcalibration()
+calibrate.calibrate_transform()
+calibrate.write_calibration()
+calibrate.readcalibration()
+calibrate.calibrate_white()
+calibrate.write_calibration()

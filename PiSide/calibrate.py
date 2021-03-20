@@ -14,8 +14,13 @@ coordinates = []
 img = config.initial_img.copy()
 marks_updated = False
 
+scaleY = 0.7
+scaleX = 1.0
+
 
 def readcalibration():
+    global img
+    img = config.initial_img.copy()
     global variables
     variables = []
     with open('calibration.txt', 'r') as f:

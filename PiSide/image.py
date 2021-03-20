@@ -5,6 +5,17 @@ import time
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
+def getImage():
+    camera = PiCamera()
+    camera.resolution = (1600,1200)
+    rawCapture = PiRGBArray(camera, size=(1600,1200))
+
+    time.sleep(0.5)
+
+    camera.capture(rawCapture, format="bgr")
+    config.initial_img = rawCapture.array
+    cv2.imwrite('fialiage.jpg',config.initial_img)
+
 def displayImage(img):
     cv2.imshow("image", img)
     k = cv2.waitKey(0)
