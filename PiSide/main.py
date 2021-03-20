@@ -3,6 +3,7 @@ import cv2
 
 import config
 import image
+import time
 import playchess, calibrate
 import numpy as np
 
@@ -45,7 +46,8 @@ def makeMove():
                                            caught))
     print(config.current_board)
     # serial.Serial('COM4', 115200)
-    # serial.write('{},{},{},{},{},{}'.format("one", "two", "three", "four", "five", "six"))
+    # serial.write('{},{},{},{},{},{}'.format(1,x_init, y_init, int(comp_move[1]), int(comp_move[3]), 0))
+    time.sleep(10)
 
 
 def display_images():
@@ -82,6 +84,7 @@ def playChess():
     # while (playchess.game_over() is not True):
         image.fixImg()
         if (image.boardRead() == -1):
+            time.sleep(1)
             pass
         image.findPieces()
         if image.findMove() == -1:
