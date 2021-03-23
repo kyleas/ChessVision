@@ -11,7 +11,7 @@ board = chess.Board()
 
 config.current_board = config.starting_board
 
-img1 = cv2.imread('Images/scanlight.jpg')
+img1 = cv2.imread('fialiage.jpg')
 pieces = []
 config.initial_img = img1
 
@@ -95,13 +95,13 @@ def playChess():
         display_images()
 
 
-# calibrate.readcalibration()
-# playChess()
+calibrate.readcalibration()
+playChess()
 
-image.getImage()
-calibrate.readcalibration()
-calibrate.calibrate_transform()
-calibrate.write_calibration()
-calibrate.readcalibration()
-calibrate.calibrate_white()
-calibrate.write_calibration()
+# image.getImage()
+# calibrate.readcalibration()
+# # calibrate.calibrate_transform()
+# # calibrate.write_calibration()
+# # calibrate.readcalibration()
+# calibrate.calibrate_white()
+# calibrate.write_calibration()

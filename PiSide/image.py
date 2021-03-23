@@ -2,18 +2,18 @@ import cv2
 import numpy as np
 import config
 import time
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+# from picamera.array import PiRGBArray
+# from picamera import PiCamera
 
 def getImage():
-    camera = PiCamera()
-    camera.resolution = (1600,1200)
-    rawCapture = PiRGBArray(camera, size=(1600,1200))
+    # camera = PiCamera()
+    # camera.resolution = (1600,1200)
+    # rawCapture = PiRGBArray(camera, size=(1600,1200))
 
     time.sleep(0.5)
 
-    camera.capture(rawCapture, format="bgr")
-    config.initial_img = rawCapture.array
+    # camera.capture(rawCapture, format="bgr")
+    # config.initial_img = rawCapture.array
     cv2.imwrite('fialiage.jpg',config.initial_img)
 
 def displayImage(img):
@@ -23,14 +23,14 @@ def displayImage(img):
         cv2.destroyAllWindows()    
 
 def fixImg():
-    camera = PiCamera()
-    camera.resolution = (1600,1200)
-    rawCapture = PiRGBArray(camera, size=(1600,1200))
+    # camera = PiCamera()
+    # camera.resolution = (1600,1200)
+    # rawCapture = PiRGBArray(camera, size=(1600,1200))
 
     time.sleep(0.5)
 
-    camera.capture(rawCapture, format="bgr")
-    config.initial_img = rawCapture.array
+    # camera.capture(rawCapture, format="bgr")
+    # config.initial_img = rawCapture.array
     displayImage(config.initial_img)
     cv2.imwrite('initial.jpg',config.initial_img)
 
@@ -60,7 +60,8 @@ def findPieces():
     gray = cv2.cvtColor(config.hsv_filter, cv2.COLOR_BGR2GRAY)
     cv2.imshow('image',gray)
 
-    ret, config.threshold = cv2.threshold(gray, 160, 255, 0)
+    ret, config.threshold = cv2.threshold(gray, 20, 255, 0)
+    displayImage(config.threshold)
     contours, hierarchy = cv2.findContours(config.threshold, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
     config.contours_img = np.zeros(config.threshold.shape)
@@ -110,6 +111,7 @@ def findPieces():
         cv2.circle(config.final_img, (start_x + int(x_interval / 2), start_y + int(y_interval / 2)), 15, (255, 0, 0), -1)
         config.pieces.append([int(start_x / x_interval), int(start_y / y_interval)])
     config.final_img = cv2.cvtColor(config.final_img, cv2.COLOR_RGB2BGR)
+    displayImage(config.final_img)
 
 def findMove():
     captured = ''

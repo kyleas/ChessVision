@@ -20,6 +20,8 @@ Interface using the Serial port at 115200 refresh rate. Input values separated b
             7 - Promote to bishop
             8 - Test placement using cool maths
             9 - Test placement using coordinates
+  6 - initial piece
+  7 - final piece
 
 1,2,3,5,6,0,p,. -> Move arm from (2,3) to (5,6) with no special move, where pawn moves to empty spot
 
@@ -50,7 +52,7 @@ double yFinal = 10.0;
 double L1 = 278; // L1 = 278mm
 double L2 = 166.5; // L2 = 165.5mm
 double theta1, theta2, phi, z;
-double zAbove = 10; // 120 sorta works
+double zAbove = 120; // 120 sorta works
 
 double spacing = 38.5;
 double yOffset = 123.57938;
@@ -58,8 +60,8 @@ double xOffset = 0.3;
 
 // ORDER: Q, R, B, N, K, P
 double gripperPositions[] = { 30, 30, 30, 30, 30, 30 };
-double zGripHeight[] = { 8, 8, 8, 8, 8, 8 };
-double zGripAbove[] = { 10, 10, 10, 10, 10, 10 };
+double zGripHeight[] = { 40, 30, 8, 30, 40, 8 };
+double zGripAbove[] = { 120, 120, 120, 120, 120, 120 };
 
 int boardLocations[][8][2] = {{{-30,-3},  {-34,-5},   {-35,-5},   {-35,0},    {-37,0},    {-40,8},    {-40,10}, {-40,18}}, 
                               {{-32,-11}, {-32,-10},  {-35,-5},   {-40,-5},   {-43,-3},   {-43,5},    {-45,5},  {-47,14}},
@@ -287,8 +289,8 @@ void homing() {
     stepper1.setCurrentPosition(-3423); 
   }
   delay(20);
-  stepper1.moveTo(0);
-  while (stepper1.currentPosition() != 0) {
+  stepper1.moveTo(-200);
+  while (stepper1.currentPosition() != -200) {
     stepper1.run();
   }
 }
@@ -394,7 +396,7 @@ void grip(char piece, boolean drop) {
     stepper4.run();
   }
   gripperServo.write(gripPos);
-  delay(3000);
+  delay(500);
   Serial.print("Grip - Move z to "); Serial.println(zAbove);
   stepper4.moveTo(zAbove * zDistanceToSteps);
   while (stepper4.currentPosition() != zAbove * zDistanceToSteps) {
@@ -469,7 +471,7 @@ void runSequence() {
       zAbove = data[3];
       grip(initialPiece,true);
       delay(2000);
-      zAbove = 10;
+      zAbove = 120;
       grip(initialPiece,false);
     }
   } else if (data[5] == 9) {              // Custom event, no move piece, just move to coordinates and pick if data[3] + data[4] > -1
@@ -481,10 +483,11 @@ void runSequence() {
       zAbove = data[3];
       grip(initialPiece,true);
       delay(2000);
-      zAbove = 10;
+      zAbove = 120;
       grip(initialPiece,false);
     }
-  } 
+  }
+  goToZero(); 
 }
 
 double convertX(double x) {
@@ -523,4 +526,13 @@ void moveEndZone(char piece) {
   capturedPiece = true;
   grip(piece, false);
   capturedPiece = false;
+}
+
+void goToZero() {
+  stepper2.moveTo(2900);
+  stepper1.moveTo(0);
+  while (stepper2.currentPosition() != 2900 || stepper1.currentPosition() != 0) {
+    stepper2.run();
+    stepper1.run();
+  }  
 }
