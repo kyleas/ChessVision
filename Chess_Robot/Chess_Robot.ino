@@ -293,6 +293,8 @@ void homing() {
   while (stepper1.currentPosition() != -200) {
     stepper1.run();
   }
+
+  Serial.println("finished home");
 }
 
 // MOVE ARM TO LOCATION
@@ -488,6 +490,7 @@ void runSequence() {
     }
   }
   goToZero(); 
+  Serial.println("made move");
 }
 
 double convertX(double x) {

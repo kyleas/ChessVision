@@ -6,6 +6,7 @@ import image
 import time
 import playchess, calibrate
 import numpy as np
+import serial
 
 board = chess.Board()
 
@@ -14,6 +15,9 @@ config.current_board = config.starting_board
 img1 = cv2.imread('fialiage.jpg')
 pieces = []
 config.initial_img = img1
+
+if __name__ == '__main__':
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 
 def userMove():
     print(config.move_start)
@@ -42,11 +46,16 @@ def makeMove():
     caught = config.current_board[int(comp_move[3]) - 1][int(y_init)]
     config.current_board[int(comp_move[1]) - 1][int(x_init)] = '.'
     config.current_board[int(comp_move[3]) - 1][int(y_init)] = moved
-    print('{},{},{},{},{},{},{},{}'.format(x_init, int(comp_move[1]) - 1, y_init, int(comp_move[3]) - 1, 0, 180, moved,
-                                           caught))
+    print('{},{},{},{},{},{},{},{}'.format(1, x_init, int(comp_move[1]) - 1, y_init, int(comp_move[3]) - 1, 0, moved, caught))
     print(config.current_board)
-    # serial.Serial('COM4', 115200)
-    # serial.write('{},{},{},{},{},{}'.format(1,x_init, y_init, int(comp_move[1]), int(comp_move[3]), 0))
+    ser.flush()
+    ser.write(b'{},{},{},{},{},{},{},{}\n'.format(1, x_init, int(comp_move[1]) - 1, y_init, int(comp_move[3]) - 1, 0, moved, caught))
+    finished = False
+    while (finished is not True):
+        time.sleep(.5)
+        line = ser.readline().decode('utf-8').rstrip()
+        if line == "made move":
+            finished = True
     time.sleep(10)
 
 
@@ -81,6 +90,14 @@ def display_images():
 
 
 def playChess():
+    ser.flush()
+    ser.write(b'0000000000000000\n')
+    finished = False
+    while (finished is not True):
+        time.sleep(1)
+        line = ser.readline().decode('rtf-8').rstrip()
+        if line == "finished home":
+            finished = True
     # while (playchess.game_over() is not True):
         image.fixImg()
         if (image.boardRead() == -1):
@@ -98,7 +115,6 @@ def playChess():
 
 calibrate.readcalibration()
 playChess()
-
 # image.getImage()
 # calibrate.readcalibration()
 # # calibrate.calibrate_transform()
