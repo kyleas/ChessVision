@@ -46,6 +46,7 @@ def fixImg():
     displayImage(config.transformed_img)
     cv2.imwrite('transform.jpg',config.transformed_img)
 
+# Now outdated cause I'm a legend
 def findPieces():
     hsv = cv2.cvtColor(config.transformed_img.copy(), cv2.COLOR_BGR2HSV)
 
@@ -111,6 +112,63 @@ def findPieces():
         cv2.circle(config.final_img, (start_x + int(x_interval / 2), start_y + int(y_interval / 2)), 15, (255, 0, 0), -1)
         config.pieces.append([int(start_x / x_interval), int(start_y / y_interval)])
     config.final_img = cv2.cvtColor(config.final_img, cv2.COLOR_RGB2BGR)
+    displayImage(config.final_img)
+
+def findPiecesIndividual():
+    hsv = cv2.cvtColor(config.transformed_img.copy(), cv2.COLOR_BGR2HSV)
+
+    mask_white = cv2.inRange(hsv, (config.white_piece_low[0], config.white_piece_low[1], config.white_piece_low[2]),
+                             (config.white_piece_high[0], config.white_piece_high[1], config.white_piece_high[2]))
+
+    imask_white = mask_white > 0
+    config.hsv_filter = np.zeros_like(config.transformed_img, np.uint8)
+    config.hsv_filter[imask_white] = config.transformed_img[imask_white]
+    displayImage(config.hsv_filter)
+
+    gray = cv2.cvtColor(config.hsv_filter, cv2.COLOR_BGR2GRAY)
+    cv2.imshow('image', gray)
+
+    ret, config.threshold = cv2.threshold(gray, 20, 255, 0)
+    displayImage(config.threshold)
+
+    squares = []
+    x = config.threshold.shape[1]
+    y = config.threshold.shape[0]
+    x_interval = int(x / 8)
+    y_interval = int(y / 8)
+    config.show_contours = np.zeros(hsv.shape)
+    print(config.show_contours.shape)
+
+    for i in range(8):
+        for j in range(8):
+            tempImg = config.threshold[y_interval*j:y_interval*(j+1), x_interval*i:x_interval*(i+1)]
+            tempContours, hierarchy = cv2.findContours(tempImg, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+            tempContours_img = np.zeros(tempImg.shape)
+            for index, cont in enumerate(tempContours):
+                if cv2.contourArea(cont) > 3000:
+                    print('past 4000')
+                    if hierarchy[0][index][3] == -1:
+                        cv2.drawContours(tempContours_img, tempContours, index, 255, -1)
+                    temp_external = tempContours_img.astype('uint8')
+                    temp_showContours = cv2.cvtColor(temp_external, cv2.COLOR_GRAY2RGB)
+
+                    cx_ind = int(cv2.moments(cont)['m10'] / cv2.moments(cont)['m00'])
+                    cy_ind = int(cv2.moments(cont)['m01'] / cv2.moments(cont)['m00'])
+                    print("cx is {} and cy is {}".format(cx_ind, cy_ind))
+                    if (cy_ind < 0.6 * tempImg.shape[0]):
+                        squares.append((i, j))
+                        print("appending {},{}".format(i,j))
+                        config.show_contours[y_interval*j:y_interval*(j+1), x_interval*i:x_interval*(i+1)] = temp_showContours
+
+    config.final_img = config.show_contours
+
+    for i in squares:
+        start_x = i[0] * x_interval
+        start_y = i[1] * y_interval
+        cv2.circle(config.final_img, (start_x + int(x_interval / 2), start_y + int(y_interval / 2)), 15, (255, 0, 0), -1)
+        config.pieces.append([int(start_x / x_interval), int(start_y / y_interval)])
+    print(config.final_img.shape)
+    # config.final_img = cv2.cvtColor(config.final_img, cv2.COLOR_RGB2BGR)
     displayImage(config.final_img)
 
 def findMove():

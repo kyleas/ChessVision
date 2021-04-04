@@ -86,7 +86,8 @@ def playChess():
         if (image.boardRead() == -1):
             time.sleep(1)
             pass
-        image.findPieces()
+        # image.findPieces()
+        image.findPiecesIndividual()
         if image.findMove() == -1:
             print("whoops! no moves found!")
             return -1
