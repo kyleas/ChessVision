@@ -57,7 +57,7 @@ def makeMove():
         if line == "made move":
             print("it made da move")
             finished = True
-    time.sleep(10)
+    time.sleep(1)
 
 
 def display_images():
