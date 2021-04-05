@@ -17,10 +17,11 @@ def getImage():
     cv2.imwrite('fialiage.jpg',config.initial_img)
 
 def displayImage(img):
-    cv2.imshow("image", img)
-    k = cv2.waitKey(0)
-    if k == 27:
-        cv2.destroyAllWindows()
+#     cv2.imshow("image", img)
+#     k = cv2.waitKey(0)
+#     if k == 27:
+#         cv2.destroyAllWindows()
+    pass
 
 def fixImg():
     rawCapture = PiRGBArray(camera, size=(1600,1200))

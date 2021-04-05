@@ -111,12 +111,12 @@ def calibrate_white():
 
         if marks_updated:
             marks_updated = False
-            config.white_piece_low[0] = int(min(hsv[coordinates[-1][1], coordinates[-1][0]][0], config.white_piece_low[0]))
-            config.white_piece_low[1] = int(min(hsv[coordinates[-1][1], coordinates[-1][0]][1], config.white_piece_low[1]))
-            config.white_piece_low[2] = int(min(hsv[coordinates[-1][1], coordinates[-1][0]][2], config.white_piece_low[2]))
-            config.white_piece_high[0] = int(max(hsv[coordinates[-1][1], coordinates[-1][0]][0], config.white_piece_high[0]))
-            config.white_piece_high[1] = int(max(hsv[coordinates[-1][1], coordinates[-1][0]][1], config.white_piece_high[1]))
-            config.white_piece_high[2] = int(max(hsv[coordinates[-1][1], coordinates[-1][0]][2], config.white_piece_high[2]))
+            config.white_piece_low[0] = int(min(hsv[coordinates[-1][1], coordinates[-1][0]][0], config.white_piece_low[0])) - 5
+            config.white_piece_low[1] = int(min(hsv[coordinates[-1][1], coordinates[-1][0]][1], config.white_piece_low[1]))- 5
+            config.white_piece_low[2] = int(min(hsv[coordinates[-1][1], coordinates[-1][0]][2], config.white_piece_low[2])) -5
+            config.white_piece_high[0] = int(max(hsv[coordinates[-1][1], coordinates[-1][0]][0], config.white_piece_high[0])) + 5
+            config.white_piece_high[1] = int(max(hsv[coordinates[-1][1], coordinates[-1][0]][1], config.white_piece_high[1])) + 5
+            config.white_piece_high[2] = int(max(hsv[coordinates[-1][1], coordinates[-1][0]][2], config.white_piece_high[2])) + 5
     #
     #
     # print('coordinates are: {}'.format(coordinates))

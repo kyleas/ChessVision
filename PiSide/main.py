@@ -125,7 +125,7 @@ def playChess():
                     finished = True
             continue
         makeMove()
-        display_images()
+#         display_images()
     print("Game Over!")    
 
 
