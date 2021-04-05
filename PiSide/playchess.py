@@ -32,6 +32,7 @@ def make_move(move):
         config.confirm_move = config.current_board
         return 1
     config.current_board = config.confirm_move
+    config.previous_board = config.confirm_move
     return -1
 
 
