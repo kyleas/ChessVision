@@ -109,6 +109,7 @@ def findMove():
         for col_index, item in enumerate(row):
             if [col_index, row_index] not in config.pieces and item.islower():
                 moved_piece = item
+                config.moved_piece = item
                 moved = True
                 config.move_start = [col_index, row_index]
                 config.current_board[row_index][col_index] = '.'
@@ -116,8 +117,11 @@ def findMove():
     print(config.pieces)
     print("{} pieces have moved!".format(totalMoved))
 
-    if moved is not True or totalMoved > 1:
+    if moved is False or totalMoved > 1:
+        config.current_board = config.previous_board
         return -1
+    else:
+        config.previous_board = config.current_board
 
     for spot in config.pieces:
         # print(spot)

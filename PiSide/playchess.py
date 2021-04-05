@@ -29,7 +29,9 @@ def make_move(move):
         config.moves.append(move)
         stockfish.set_position(config.moves)
         board = chess.Board(stockfish.get_fen_position())
+        config.confirm_move = config.current_board
         return 1
+    config.current_board = config.confirm_move
     return -1
 
 

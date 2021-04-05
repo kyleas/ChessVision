@@ -1,4 +1,4 @@
-starting_board = [['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+starting_board = [['r', 'n', 'b', 'k', 'q', 'b', 'n', 'r'],
                   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
                   ['.', '.', '.', '.', '.', '.', '.', '.'],
                   ['.', '.', '.', '.', '.', '.', '.', '.'],
@@ -7,6 +7,8 @@ starting_board = [['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
                   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
                   ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']]
 
+previous_board = [[], [], [], [], [], [], [], []]
+confirm_move = [[], [], [], [], [], [], [], []]
 current_board = [[],[],[],[],[],[],[],[]]
 
 moves = []
@@ -26,6 +28,7 @@ contours_img = None
 show_contours = None
 final_img = None
 handImg = None
+moved_piece = None
 
 white_piece_low = []
 white_piece_high = []

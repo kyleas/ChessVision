@@ -11,6 +11,8 @@ import serial
 board = chess.Board()
 
 config.current_board = config.starting_board
+config.previous_board = config.starting_board
+config.confirm_move = config.starting_board
 
 img1 = cv2.imread('fialiage.jpg')
 pieces = []
@@ -25,17 +27,8 @@ def userMove():
     start = chr(ord('`') + int(config.move_start[0])+1) + str(int(config.move_start[1])+1)
     end = chr(ord('`') + int(config.move_end[0])+1) + str(int(config.move_end[1])+1)
     if playchess.make_move(start + end) == -1:
-        wrongMove()
-
-
-def wrongMove():
-    print("found a wrong move :(")
-    # TODO
-
-
-def boardReady():
-    return True  # TODO
-
+        return -1
+    return 1
 
 def makeMove():
     comp_move = playchess.computer_move()
@@ -93,7 +86,6 @@ def display_images():
 def playChess():
     ser.flush()
     time.sleep(.5)
-    print('0,0,0,0,0,000')
     print('sending home')
     ser.write('0,1,2,3,4,5,6,7\n'.encode('utf-8'))
     time.sleep(.5)
@@ -108,9 +100,6 @@ def playChess():
     while (playchess.game_over() is not True):
         foundMove = False
         image.fixImg()
-#         if (image.boardRead() == -1):
-#             time.sleep(1)
-#             pass
         image.findPiecesIndividual()
         if image.findMove() != -1:
             foundMove = True
@@ -122,7 +111,19 @@ def playChess():
                 foundMove = True
             time.sleep(1)
             continue
-        userMove()
+        if (userMove() == -1):
+            ser.flush()
+            ser.write('{},{},{},{},{},{},{},{}\n'.format(1, end[0], 7 - (end[1]), start[0], 7 - (start[0]), 0, config.moved_piece, '.').encode('utf-8'))
+            print('found a wrong move :(')
+            time.sleep(1)
+            finished = False
+            while (finished is False):
+                time.sleep(.5)
+                line = ser.readline().decode('utf-8').rstrip()
+                if line == "made move":
+                    print("it made da move")
+                    finished = True
+            continue
         makeMove()
 #         display_images()
     print("Game Over!")    
