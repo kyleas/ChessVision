@@ -7,12 +7,13 @@ import time
 import playchess, calibrate
 import numpy as np
 import serial
+import copy
 
 board = chess.Board()
 
-config.current_board = config.starting_board
-config.previous_board = config.starting_board
-config.confirm_move = config.starting_board
+config.current_board = copy.deepcopy(config.starting_board)
+config.previous_board = copy.deepcopy(config.starting_board)
+config.confirm_move = copy.deepcopy(config.starting_board)
 
 img1 = cv2.imread('fialiage.jpg')
 pieces = []
@@ -39,6 +40,8 @@ def makeMove():
     caught = config.current_board[int(comp_move[3]) - 1][int(y_init)]
     config.current_board[int(comp_move[1]) - 1][int(x_init)] = '.'
     config.current_board[int(comp_move[3]) - 1][int(y_init)] = moved
+    config.previous_board = copy.deepcopy(config.current_board)
+    config.confirm_move = copy.deepcopy(config.current_board)
     print('{},{},{},{},{},{},{},{}'.format(1, x_init, 7 - (int(comp_move[1]) - 1), y_init, 7 - (int(comp_move[3]) - 1), 0, moved, caught))
     print(config.current_board)
     ser.flush()
@@ -97,21 +100,23 @@ def playChess():
         if line == "finished home":
             print("it finished home")
             finished = True
-    while (playchess.game_over() is not True):
+    while (playchess.game_over() is False):
         foundMove = False
-        image.fixImg()
-        image.findPiecesIndividual()
-        if image.findMove() != -1:
-            foundMove = True
+#         image.fixImg()
+#         image.findPiecesIndividual()
+#         if image.findMove() != -1:
+#             foundMove = True
         while foundMove is False:
             image.fixImg()
             image.findPiecesIndividual()
-            print("whoops! no moves found!")
             result = image.findMove()
             if result == -2:
                 print("waiting longer to confirm")
             elif result != -1:
+                print("found move")
                 foundMove = True
+            else:
+                print("whoops! no move found!")
             time.sleep(1)
             continue
         if (userMove() == -1):
