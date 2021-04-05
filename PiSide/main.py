@@ -107,13 +107,16 @@ def playChess():
             image.fixImg()
             image.findPiecesIndividual()
             print("whoops! no moves found!")
-            if image.findMove() != -1:
+            result = image.findMove()
+            if result == -2:
+                print("waiting longer to confirm")
+            elif result != -1:
                 foundMove = True
             time.sleep(1)
             continue
         if (userMove() == -1):
             ser.flush()
-            ser.write('{},{},{},{},{},{},{},{}\n'.format(1, end[0], 7 - (end[1]), start[0], 7 - (start[0]), 0, config.moved_piece, '.').encode('utf-8'))
+            ser.write('{},{},{},{},{},{},{},{}\n'.format(1, config.move_end[0], 7 - (config.move_end[1]), config.move_start[0], 7 - (config.move_start[0]), 0, config.moved_piece, '.').encode('utf-8'))
             print('found a wrong move :(')
             time.sleep(1)
             finished = False

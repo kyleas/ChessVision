@@ -120,9 +120,15 @@ def findMove():
 
     if moved is False or totalMoved > 1:
         config.current_board = config.previous_board
+        config.rotations = 0
         return -1
+    elif config.rotations < 4:
+        config.rotations += 1
+        config.current_board = config.previous_board
+        return -2
     else:
         config.previous_board = config.current_board
+        config.rotations = 0
 
     for spot in config.pieces:
         # print(spot)

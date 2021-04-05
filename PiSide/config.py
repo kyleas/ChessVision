@@ -29,6 +29,7 @@ show_contours = None
 final_img = None
 handImg = None
 moved_piece = None
+rotations = 0
 
 white_piece_low = []
 white_piece_high = []
