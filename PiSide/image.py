@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import config
 import time
+import copy
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
@@ -67,7 +68,6 @@ def findPiecesIndividual():
     x_interval = int(x / 8)
     y_interval = int(y / 8)
     config.show_contours = np.zeros(hsv.shape)
-    print(config.show_contours.shape)
 
     for i in range(8):
         for j in range(8):
@@ -106,6 +106,9 @@ def findMove():
     moved_piece = ''
     moved = False
     totalMoved = 0
+    print(config.current_board)
+    print('----------')
+    print(config.previous_board)
     for row_index, row in enumerate(config.current_board):
         for col_index, item in enumerate(row):
             if [col_index, row_index] not in config.pieces and item.islower():
@@ -119,15 +122,16 @@ def findMove():
     print("{} pieces have moved!".format(totalMoved))
 
     if moved is False or totalMoved > 1:
-        config.current_board = config.previous_board
+        config.current_board = copy.deepcopy(config.previous_board)
         config.rotations = 0
         return -1
-    elif config.rotations < 4:
+    elif config.rotations < 2:
         config.rotations += 1
-        config.current_board = config.previous_board
+        config.current_board = copy.deepcopy(config.previous_board)
         return -2
     else:
-        config.previous_board = config.current_board
+        print("got to the else baby!")
+        config.previous_board = copy.deepcopy(config.current_board)
         config.rotations = 0
 
     for spot in config.pieces:

@@ -1,11 +1,9 @@
 from stockfish import Stockfish
 import config
 import chess
-
+import copy
 
 board = chess.Board()
-
-
 
 #Windows
 # stockfish = Stockfish('stockfish/stockfish_13_win_x64_bmi2.exe')
@@ -29,10 +27,10 @@ def make_move(move):
         config.moves.append(move)
         stockfish.set_position(config.moves)
         board = chess.Board(stockfish.get_fen_position())
-        config.confirm_move = config.current_board
+        config.confirm_move = copy.deepcopy(config.current_board)
         return 1
-    config.current_board = config.confirm_move
-    config.previous_board = config.confirm_move
+    config.current_board = copy.deepcopy(config.confirm_move)
+    config.previous_board = copy.deepcopy(config.confirm_move)
     return -1
 
 
