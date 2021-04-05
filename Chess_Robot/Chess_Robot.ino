@@ -60,7 +60,7 @@ double xOffset = 0.3;
 
 // ORDER: Q, R, B, N, K, P
 double gripperPositions[] = { 30, 30, 30, 30, 30, 30 };
-double zGripHeight[] = { 40, 30, 8, 30, 40, 8 };
+double zGripHeight[] = { 40, 30, 8, 20, 40, 8 };
 double zGripAbove[] = { 120, 120, 120, 120, 120, 120 };
 
 int boardLocations[][8][2] = {{{-30,-3},  {-34,-5},   {-35,-5},   {-35,0},    {-37,0},    {-40,8},    {-40,10}, {-40,18}}, 
@@ -515,8 +515,8 @@ void moveEndZone(char piece) {
   for (int i = 0; i < sizeof(endZone); i++) {
     for (int j = 0; j < sizeof(endZone[0]); j++) {
       if (endZone[i][j] == '.') {
-        placementX = i + 10;
-        placementY = j;
+        placementX = i + 6;
+        placementY = j + 2;
         endZone[i][j] = piece;
       }
     }
@@ -532,9 +532,9 @@ void moveEndZone(char piece) {
 }
 
 void goToZero() {
-  stepper2.moveTo(2900);
-  stepper1.moveTo(0);
-  while (stepper2.currentPosition() != 2900 || stepper1.currentPosition() != 0) {
+  stepper2.moveTo(3000);
+  stepper1.moveTo(-200);
+  while (stepper2.currentPosition() != 3000 || stepper1.currentPosition() != -200) {
     stepper2.run();
     stepper1.run();
   }  
