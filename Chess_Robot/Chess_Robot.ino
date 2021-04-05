@@ -59,7 +59,7 @@ double yOffset = 123.57938;
 double xOffset = 0.3;
 
 // ORDER: Q, R, B, N, K, P
-double gripperPositions[] = { 30, 30, 30, 30, 30, 30 };
+double gripperPositions[] = { 30, 30, 30, 25, 30, 30 };
 double zGripHeight[] = { 40, 30, 8, 20, 40, 8 };
 double zGripAbove[] = { 120, 120, 120, 120, 120, 120 };
 
@@ -388,7 +388,7 @@ void grip(char piece, boolean drop) {
   gripPos = (drop) ? gripPos : gripperOpen;
 
   if (capturedPiece) {
-    z = z - 20;
+    z = z - 25;
   }
 
   stepper4.setSpeed(3000);
@@ -514,15 +514,15 @@ void moveEndZone(char piece) {
   float placementY = 4.1;
   for (int i = 0; i < sizeof(endZone); i++) {
     for (int j = 0; j < sizeof(endZone[0]); j++) {
-      if (endZone[i][j] == '.') {
-        placementX = i + 6;
-        placementY = j + 2;
-        endZone[i][j] = piece;
+      if (endZone[j][i] == '.') {
+        placementX = i + 2;
+        placementY = j + 6;
+        endZone[j][i] = piece;
       }
     }
-    if (placementX != 10 || placementY != 4.1) {
-      break;
-    }
+    // if (placementX != 10 || placementY != 4.1) {
+    //   break;
+    // }
   }
 
   moveArm(placementX, placementY); 
