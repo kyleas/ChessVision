@@ -46,15 +46,16 @@ def makeMove():
     caught = config.current_board[int(comp_move[3]) - 1][int(y_init)]
     config.current_board[int(comp_move[1]) - 1][int(x_init)] = '.'
     config.current_board[int(comp_move[3]) - 1][int(y_init)] = moved
-    print('{},{},{},{},{},{},{},{}'.format(1, x_init, int(comp_move[1]) - 1, y_init, int(comp_move[3]) - 1, 0, moved, caught))
+    print('{},{},{},{},{},{},{},{}'.format(1, x_init, 7 - (int(comp_move[1]) - 1), y_init, 7 - (int(comp_move[3]) - 1), 0, moved, caught))
     print(config.current_board)
     ser.flush()
-    ser.write(b'{},{},{},{},{},{},{},{}\n'.format(1, x_init, int(comp_move[1]) - 1, y_init, int(comp_move[3]) - 1, 0, moved, caught))
+    ser.write('{},{},{},{},{},{},{},{}\n'.format(1, x_init, 7 - (int(comp_move[1]) - 1), y_init, 7 - (int(comp_move[3]) - 1), 0, moved, caught).encode('utf-8'))
     finished = False
     while (finished is not True):
         time.sleep(.5)
         line = ser.readline().decode('utf-8').rstrip()
         if line == "made move":
+            print("it made da move")
             finished = True
     time.sleep(10)
 
@@ -68,8 +69,8 @@ def display_images():
     threshold = cv2.resize(threshold, (square_size, square_size))
     show_contours = cv2.resize(config.show_contours, (square_size, square_size))
     final_img = cv2.resize(config.final_img, (square_size, square_size))
-    handImg = cv2.cvtColor(config.handImg, cv2.COLOR_GRAY2BGR)
-    handImg = cv2.resize(handImg, (square_size, square_size))
+#     handImg = cv2.cvtColor(config.handImg, cv2.COLOR_GRAY2BGR)
+#     handImg = cv2.resize(handImg, (square_size, square_size))
     blank_square = np.zeros([square_size * 2, square_size * 3, 3], dtype=np.uint8)
 
     blank_square[0:square_size, 0:square_size] = initial_img
@@ -77,7 +78,7 @@ def display_images():
     blank_square[square_size * 0:square_size * 1, square_size * 2:square_size * 3] = hsv_filter
     blank_square[square_size * 1:square_size * 2, square_size * 0:square_size * 1] = threshold
     blank_square[square_size * 1:square_size * 2, square_size * 1:square_size * 2] = show_contours
-    blank_square[square_size * 1:square_size * 2, square_size * 2:square_size * 3] = handImg
+#     blank_square[square_size * 1:square_size * 2, square_size * 2:square_size * 3] = handImg
 
     cv2.imshow("blanky", blank_square)
 
@@ -91,26 +92,40 @@ def display_images():
 
 def playChess():
     ser.flush()
-    ser.write(b'0000000000000000\n')
+    time.sleep(.5)
+    print('0,0,0,0,0,000')
+    print('sending home')
+    ser.write('0,1,2,3,4,5,6,7\n'.encode('utf-8'))
+    time.sleep(.5)
+    ser.write('0,1,2,3,4,5,6,7\n'.encode('utf-8'))
     finished = False
     while (finished is not True):
-        time.sleep(1)
-        line = ser.readline().decode('rtf-8').rstrip()
+        time.sleep(.5)
+        line = ser.readline().decode('utf-8').rstrip()
         if line == "finished home":
+            print("it finished home")
             finished = True
-    # while (playchess.game_over() is not True):
+    while (playchess.game_over() is not True):
+        foundMove = False
         image.fixImg()
-        if (image.boardRead() == -1):
-            time.sleep(1)
-            pass
-        # image.findPieces()
+#         if (image.boardRead() == -1):
+#             time.sleep(1)
+#             pass
         image.findPiecesIndividual()
-        if image.findMove() == -1:
+        if image.findMove() != -1:
+            foundMove = True
+        while foundMove is False:
+            image.fixImg()
+            image.findPiecesIndividual()
             print("whoops! no moves found!")
-            return -1
+            if image.findMove() != -1:
+                foundMove = True
+            time.sleep(1)
+            continue
         userMove()
         makeMove()
-        display_images()
+#         display_images()
+    print("Game Over!")    
 
 
 calibrate.readcalibration()

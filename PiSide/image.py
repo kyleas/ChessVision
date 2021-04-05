@@ -2,35 +2,32 @@ import cv2
 import numpy as np
 import config
 import time
-# from picamera.array import PiRGBArray
-# from picamera import PiCamera
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+
+camera = PiCamera()
+camera.resolution = (1600,1200)
+rawCapture = PiRGBArray(camera, size=(1600,1200))
 
 def getImage():
-    # camera = PiCamera()
-    # camera.resolution = (1600,1200)
-    # rawCapture = PiRGBArray(camera, size=(1600,1200))
-
     time.sleep(0.5)
 
-    # camera.capture(rawCapture, format="bgr")
-    # config.initial_img = rawCapture.array
+    camera.capture(rawCapture, format="bgr")
+    config.initial_img = rawCapture.array
     cv2.imwrite('fialiage.jpg',config.initial_img)
 
 def displayImage(img):
     cv2.imshow("image", img)
     k = cv2.waitKey(0)
     if k == 27:
-        cv2.destroyAllWindows()    
+        cv2.destroyAllWindows()
 
 def fixImg():
-    # camera = PiCamera()
-    # camera.resolution = (1600,1200)
-    # rawCapture = PiRGBArray(camera, size=(1600,1200))
+    rawCapture = PiRGBArray(camera, size=(1600,1200))
+    time.sleep(.5)
 
-    time.sleep(0.5)
-
-    # camera.capture(rawCapture, format="bgr")
-    # config.initial_img = rawCapture.array
+    camera.capture(rawCapture, format="bgr")
+    config.initial_img = rawCapture.array
     displayImage(config.initial_img)
     cv2.imwrite('initial.jpg',config.initial_img)
 
@@ -45,74 +42,6 @@ def fixImg():
     config.transformed_img = cv2.warpPerspective(config.initial_img, M, (1200, 1200))
     displayImage(config.transformed_img)
     cv2.imwrite('transform.jpg',config.transformed_img)
-
-# Now outdated cause I'm a legend
-def findPieces():
-    hsv = cv2.cvtColor(config.transformed_img.copy(), cv2.COLOR_BGR2HSV)
-
-    mask_white = cv2.inRange(hsv, (config.white_piece_low[0], config.white_piece_low[1], config.white_piece_low[2]),
-                             (config.white_piece_high[0], config.white_piece_high[1], config.white_piece_high[2]))
-
-    imask_white = mask_white > 0
-    config.hsv_filter = np.zeros_like(config.transformed_img, np.uint8)
-    config.hsv_filter[imask_white] = config.transformed_img[imask_white]
-    displayImage(config.hsv_filter)
-
-    gray = cv2.cvtColor(config.hsv_filter, cv2.COLOR_BGR2GRAY)
-    cv2.imshow('image',gray)
-
-    ret, config.threshold = cv2.threshold(gray, 20, 255, 0)
-    displayImage(config.threshold)
-    contours, hierarchy = cv2.findContours(config.threshold, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
-
-    config.contours_img = np.zeros(config.threshold.shape)
-
-    for i in range(len(contours)):
-        if hierarchy[0][i][3] == -1:
-            cv2.drawContours(config.contours_img, contours, i, 255, -1)
-
-    external_contours = config.contours_img.astype('uint8')
-    config.show_contours = cv2.cvtColor(external_contours, cv2.COLOR_GRAY2RGB)
-    squares = []
-
-    for i in contours:
-        if cv2.contourArea(i) > 5000:
-            x, y, w, h = cv2.boundingRect(i)
-            cv2.rectangle(config.show_contours, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-            cx = int(cv2.moments(i)['m10'] / cv2.moments(i)['m00'])
-            cy = int(cv2.moments(i)['m01'] / cv2.moments(i)['m00'])
-            cv2.circle(config.show_contours, (cx, cy), 15, (255, 0, 0), -1)
-            squares.append((cx, cy))
-
-    the_sum = 0
-    max_val = 0
-    max_n = 0
-
-    for n, num in enumerate(contours):
-        the_sum += cv2.contourArea(num)
-        if max_val < cv2.contourArea(num):
-            max_val = cv2.contourArea(num)
-            max_n = n
-
-    x = config.show_contours.shape[1]
-    y = config.show_contours.shape[0]
-    x_interval = int(x / 8)
-    y_interval = int(x / 8)
-    more_line = config.show_contours
-
-    for i in range(8):
-        cv2.line(more_line, (0 + i * x_interval, 0), (0 + i * x_interval, y), (0, 0, 255), 2)
-        cv2.line(more_line, (0, 0 + i * y_interval), (x, 0 + i * y_interval), (0, 0, 255), 2)
-
-    config.final_img = cv2.cvtColor(config.transformed_img, cv2.COLOR_BGR2RGB)
-    for i in squares:
-        start_x = int(i[0] / x_interval) * x_interval
-        start_y = int(i[1] / y_interval) * y_interval
-        cv2.circle(config.final_img, (start_x + int(x_interval / 2), start_y + int(y_interval / 2)), 15, (255, 0, 0), -1)
-        config.pieces.append([int(start_x / x_interval), int(start_y / y_interval)])
-    config.final_img = cv2.cvtColor(config.final_img, cv2.COLOR_RGB2BGR)
-    displayImage(config.final_img)
 
 def findPiecesIndividual():
     hsv = cv2.cvtColor(config.transformed_img.copy(), cv2.COLOR_BGR2HSV)
@@ -146,7 +75,7 @@ def findPiecesIndividual():
             tempContours_img = np.zeros(tempImg.shape)
             for index, cont in enumerate(tempContours):
                 if cv2.contourArea(cont) > 3000:
-                    print('past 4000')
+#                     print('past 4000')
                     if hierarchy[0][index][3] == -1:
                         cv2.drawContours(tempContours_img, tempContours, index, 255, -1)
                     temp_external = tempContours_img.astype('uint8')
@@ -154,20 +83,20 @@ def findPiecesIndividual():
 
                     cx_ind = int(cv2.moments(cont)['m10'] / cv2.moments(cont)['m00'])
                     cy_ind = int(cv2.moments(cont)['m01'] / cv2.moments(cont)['m00'])
-                    print("cx is {} and cy is {}".format(cx_ind, cy_ind))
+#                     print("cx is {} and cy is {}".format(cx_ind, cy_ind))
                     if (cy_ind < 0.6 * tempImg.shape[0]):
                         squares.append((i, j))
-                        print("appending {},{}".format(i,j))
+#                         print("appending {},{}".format(i,j))
                         config.show_contours[y_interval*j:y_interval*(j+1), x_interval*i:x_interval*(i+1)] = temp_showContours
 
     config.final_img = config.show_contours
-
+    config.pieces = []
     for i in squares:
         start_x = i[0] * x_interval
         start_y = i[1] * y_interval
         cv2.circle(config.final_img, (start_x + int(x_interval / 2), start_y + int(y_interval / 2)), 15, (255, 0, 0), -1)
         config.pieces.append([int(start_x / x_interval), int(start_y / y_interval)])
-    print(config.final_img.shape)
+#     print(config.final_img.shape)
     # config.final_img = cv2.cvtColor(config.final_img, cv2.COLOR_RGB2BGR)
     displayImage(config.final_img)
 
